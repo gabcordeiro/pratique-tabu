@@ -1,6 +1,8 @@
 export interface User {
   username: string;
   password: string;
+  email: string; // ✅ adicionamos email
+  points?: number;
 }
 
 export interface TabuadaAnswer {
@@ -18,8 +20,10 @@ export interface TabuadaRecord {
   answers: TabuadaAnswer[];
 }
 
-export const getUsers = (): User[] =>
-  JSON.parse(localStorage.getItem("users") || "[]");
+// Usuários
+export const getUsers = (): User[] => {
+  return JSON.parse(localStorage.getItem("users") || "[]");
+};
 
 export const saveUser = (user: User) => {
   const users = getUsers();
@@ -28,14 +32,17 @@ export const saveUser = (user: User) => {
 };
 
 export const findUser = (
-  username: string,
+  usernameOrEmail: string,
   password: string
 ): User | undefined => {
   return getUsers().find(
-    (u) => u.username === username && u.password === password
+    (u) =>
+      (u.username === usernameOrEmail || u.email === usernameOrEmail) &&
+      u.password === password
   );
 };
 
+// Histórico
 export const saveHistory = (username: string, record: TabuadaRecord) => {
   const histories: Record<string, TabuadaRecord[]> = JSON.parse(
     localStorage.getItem("histories") || "{}"

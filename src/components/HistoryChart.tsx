@@ -7,6 +7,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 
 interface HistoryChartProps {
@@ -17,16 +18,19 @@ const HistoryChart: React.FC<HistoryChartProps> = ({ records }) => {
   const data = records.map((r) => ({
     date: r.date,
     percentage: r.percentage,
+    acertos: r.correctAnswers,
   }));
 
   return (
-    <div style={{ width: "100%", height: 300 }}>
+    <div style={{ width: "100%", height: 300 }} className="my-3">
       <ResponsiveContainer>
         <BarChart data={data}>
           <XAxis dataKey="date" />
           <YAxis domain={[0, 100]} />
           <Tooltip />
-          <Bar dataKey="percentage" fill="#007bff" />
+          <Legend />
+          <Bar dataKey="percentage" fill="#007bff" name="Porcentagem (%)" />
+          <Bar dataKey="acertos" fill="#28a745" name="Acertos" />
         </BarChart>
       </ResponsiveContainer>
     </div>

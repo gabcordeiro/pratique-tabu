@@ -4,6 +4,7 @@
   border-radius: 10px;
   border: 1px solid #dee2e6;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
 /* Questão */
@@ -17,16 +18,29 @@
 input.is-valid {
   border-color: #28a745;
   background-color: #d4edda;
+  transition: all 0.3s ease;
 }
 
 input.is-invalid {
   border-color: #dc3545;
   background-color: #f8d7da;
+  transition: all 0.3s ease;
 }
 
 /* Botões */
 button {
   font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* Badges */
+.badge {
+  font-size: 1rem;
+  margin-bottom: 3px;
 }
 
 /* Responsividade */
@@ -35,3 +49,6 @@ button {
     width: 100%;
   }
 }
+
+/* Animate.css */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");

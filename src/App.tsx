@@ -1,33 +1,41 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import { User } from "./utils/storage";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [isRegister, setIsRegister] = useState(false);
 
-  const handleLogin = (u: User) => setUser(u);
   const handleLogout = () => setUser(null);
 
-  return (
-    <Router>
-      <Navbar user={user} onLogout={handleLogout} />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            user ? <Dashboard user={user} /> : <Login onLogin={handleLogin} />
-          }
-        />
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-    </Router>
-  );
+  if (!user) {
+    return isRegister ? (
+      <Register
+        onRegister={setUser}
+        onBackToLogin={() => setIsRegister(false)}
+      />
+    ) : (
+      <div className="container mt-5">
+        <Login onLogin={setUser} />
+        <p className="text-center mt-2">
+          Não tem conta?{" "}
+          <span
+            className="text-primary"
+            style={{ cursor: "pointer" }}
+            onClick={() => setIsRegister(true)}
+          >
+            Criar conta
+          </span>
+        </p>
+      </div>
+    );
+  }
+
+  return <Dashboard user={user} onLogout={handleLogout} />;
 };
 
 export default App;

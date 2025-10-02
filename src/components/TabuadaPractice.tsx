@@ -8,6 +8,7 @@ import {
 
 interface TabuadaPracticeProps {
   user: User;
+  onFinish?: () => void;
 }
 
 interface Question {
@@ -17,7 +18,10 @@ interface Question {
 
 const TOTAL_QUESTIONS = 30;
 
-const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({ user }) => {
+const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({
+  user,
+  onFinish,
+}) => {
   const [number, setNumber] = useState(1);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -61,7 +65,7 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({ user }) => {
       } else {
         finishPractice(updatedAnswers);
       }
-    }, 500); // feedback visual por 0.5s
+    }, 500);
   };
 
   const finishPractice = (finalAnswers: TabuadaAnswer[]) => {
@@ -76,12 +80,13 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({ user }) => {
     };
     saveHistory(user.username, record);
     setFinished(true);
+    onFinish?.();
   };
 
   return (
     <div className="container">
       {!questions.length && (
-        <div className="practice-start card p-4 my-3">
+        <div className="practice-start card p-4 my-3 animate__animated animate__fadeIn">
           <h2 className="text-center mb-3">Escolha a tabuada para praticar</h2>
           <input
             type="number"
@@ -96,7 +101,7 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({ user }) => {
       )}
 
       {questions.length > 0 && !finished && (
-        <div className="practice-card card p-4 my-3 text-center">
+        <div className="practice-card card p-4 my-3 text-center animate__animated animate__fadeIn">
           <h4>
             Questão {currentIndex + 1} / {TOTAL_QUESTIONS}
           </h4>
@@ -118,11 +123,21 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({ user }) => {
           <button className="btn btn-success mt-2 w-50" onClick={handleAnswer}>
             Responder
           </button>
+
+          {/* Indicador de acertos e erros */}
+          <div className="mt-3">
+            <span className="badge bg-success me-2">
+              Acertos: {answers.filter((a) => a.correct).length}
+            </span>
+            <span className="badge bg-danger">
+              Erros: {answers.filter((a) => !a.correct).length}
+            </span>
+          </div>
         </div>
       )}
 
       {finished && (
-        <div className="practice-result card p-4 my-3 text-center">
+        <div className="practice-result card p-4 my-3 text-center animate__animated animate__bounceIn">
           <h2>Prática finalizada!</h2>
           <p>Tabuada: {number}</p>
           <p>
@@ -136,7 +151,21 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({ user }) => {
             )}
             %
           </p>
-          <button className="btn btn-primary mt-3" onClick={generateQuestions}>
+
+          {/* Badge de performance */}
+          {answers.filter((a) => a.correct).length / TOTAL_QUESTIONS >= 0.8 ? (
+            <span className="badge bg-success fs-5">Excelente!</span>
+          ) : answers.filter((a) => a.correct).length / TOTAL_QUESTIONS >=
+            0.5 ? (
+            <span className="badge bg-warning fs-5">Bom!</span>
+          ) : (
+            <span className="badge bg-danger fs-5">Precisa praticar mais!</span>
+          )}
+
+          <button
+            className="btn btn-primary mt-3 w-50"
+            onClick={generateQuestions}
+          >
             Praticar novamente
           </button>
         </div>
