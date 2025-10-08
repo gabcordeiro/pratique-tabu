@@ -9,6 +9,14 @@ Um aplicativo web para **praticar tabuada**, com **login, registro, histórico, 
 
 ---
 
+## 🔹 Imagens
+
+<img width="494" height="596" alt="Captura de tela 2025-10-08 165526" src="https://github.com/user-attachments/assets/1be96da7-afe7-43cd-942a-02566cb0de8b" />
+<img width="481" height="561" alt="Captura de tela 2025-10-08 165724" src="https://github.com/user-attachments/assets/0568f8a0-4210-4468-b97d-47aacb1b9a68" />
+<img width="468" height="561" alt="Captura de tela 2025-10-08 165737" src="https://github.com/user-attachments/assets/a109687b-db2b-4e74-977d-c04c14b2dc77" />
+<img width="464" height="555" alt="Captura de tela 2025-10-08 165752" src="https://github.com/user-attachments/assets/d7a552ea-bc73-47d2-b765-27d726f54d95" />
+<img width="479" height="356" alt="Captura de tela 2025-10-08 165806" src="https://github.com/user-attachments/assets/0f86a48d-c4dc-4460-aa2a-a2bee5c76596" />
+
 ## 🔹 Funcionalidades
 
 - ✅ Registro e Login
