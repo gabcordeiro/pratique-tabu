@@ -18,7 +18,10 @@ interface Question {
 
 const TOTAL_QUESTIONS = 30;
 
-const randomTabuada = () => Math.floor(Math.random() * 10) + 1;
+// Multiplicações por 1 e por 10 são fáceis demais, então usamos só de 2 a 9
+const randomFactor = () => Math.floor(Math.random() * 8) + 2;
+
+const randomTabuada = randomFactor;
 
 const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({
   user,
@@ -43,7 +46,7 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({
   const generateQuestions = (tabuada: number = number) => {
     const qs: Question[] = [];
     for (let i = 0; i < TOTAL_QUESTIONS; i++) {
-      qs.push({ n1: Math.floor(Math.random() * 10 + 1), n2: tabuada });
+      qs.push({ n1: randomFactor(), n2: tabuada });
     }
     setNumber(tabuada);
     setQuestions(qs);
