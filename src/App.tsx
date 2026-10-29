@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
-import { User } from "./utils/storage";
+import {
+  User,
+  createAnonymousUser,
+  clearAnonymousHistory,
+} from "./utils/storage";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -10,7 +14,10 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isRegister, setIsRegister] = useState(false);
 
-  const handleLogout = () => setUser(null);
+  const handleLogout = () => {
+    if (user?.anonymous) clearAnonymousHistory();
+    setUser(null);
+  };
 
   if (!user) {
     return isRegister ? (
@@ -31,6 +38,17 @@ const App: React.FC = () => {
             Criar conta
           </span>
         </p>
+        <div className="text-center">
+          <button
+            className="btn btn-outline-secondary"
+            onClick={() => setUser(createAnonymousUser())}
+          >
+            Entrar sem login (modo anônimo)
+          </button>
+          <p className="text-muted small mt-1">
+            No modo anônimo o histórico não é salvo depois que você sair.
+          </p>
+        </div>
       </div>
     );
   }

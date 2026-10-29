@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User, saveUser, getUsers } from "../utils/storage";
+import { User, saveUser, getUsers, ANONYMOUS_USERNAME } from "../utils/storage";
 
 interface RegisterProps {
   onRegister: (user: User) => void;
@@ -35,7 +35,10 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onBackToLogin }) => {
     }
 
     const users = getUsers();
-    if (users.some((u) => u.username === username)) {
+    if (
+      username === ANONYMOUS_USERNAME ||
+      users.some((u) => u.username === username)
+    ) {
       setError("Nome de usuário já existe");
       return;
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   User,
   TabuadaAnswer,
@@ -18,6 +18,8 @@ interface Question {
 
 const TOTAL_QUESTIONS = 30;
 
+const randomTabuada = () => Math.floor(Math.random() * 10) + 1;
+
 const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({
   user,
   onFinish,
@@ -29,12 +31,21 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({
   const [answers, setAnswers] = useState<TabuadaAnswer[]>([]);
   const [finished, setFinished] = useState(false);
   const [feedback, setFeedback] = useState<"correct" | "wrong" | null>(null);
+  const answerInputRef = useRef<HTMLInputElement>(null);
 
-  const generateQuestions = () => {
+  // Mantém o cursor no campo de resposta durante a prática
+  useEffect(() => {
+    if (questions.length > 0 && !finished) {
+      answerInputRef.current?.focus();
+    }
+  }, [questions, currentIndex, finished]);
+
+  const generateQuestions = (tabuada: number = number) => {
     const qs: Question[] = [];
     for (let i = 0; i < TOTAL_QUESTIONS; i++) {
-      qs.push({ n1: Math.floor(Math.random() * 10 + 1), n2: number });
+      qs.push({ n1: Math.floor(Math.random() * 10 + 1), n2: tabuada });
     }
+    setNumber(tabuada);
     setQuestions(qs);
     setCurrentIndex(0);
     setAnswers([]);
@@ -42,8 +53,15 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({
     setFeedback(null);
   };
 
-  const handleAnswer = () => {
-    if (userAnswer === "") return;
+  const startRandomPractice = () => {
+    generateQuestions(randomTabuada());
+  };
+
+  const handleAnswer = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    answerInputRef.current?.focus();
+    // Ignora Enter enquanto o feedback da questão anterior ainda está na tela
+    if (userAnswer === "" || feedback !== null) return;
 
     const q = questions[currentIndex];
     const ansNum = parseInt(userAnswer);
@@ -88,14 +106,29 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({
       {!questions.length && (
         <div className="practice-start card p-4 my-3 animate__animated animate__fadeIn">
           <h2 className="text-center mb-3">Escolha a tabuada para praticar</h2>
-          <input
-            type="number"
-            className="form-control mb-3"
-            value={number}
-            onChange={(e) => setNumber(parseInt(e.target.value))}
-          />
-          <button className="btn btn-primary w-100" onClick={generateQuestions}>
-            Iniciar Prática
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              generateQuestions();
+            }}
+          >
+            <input
+              type="number"
+              inputMode="numeric"
+              className="form-control mb-3"
+              value={number}
+              onChange={(e) => setNumber(parseInt(e.target.value))}
+              autoFocus
+            />
+            <button type="submit" className="btn btn-primary w-100 mb-2">
+              Iniciar Prática
+            </button>
+          </form>
+          <button
+            className="btn btn-outline-primary w-100"
+            onClick={startRandomPractice}
+          >
+            🎲 Sortear tabuada aleatória
           </button>
         </div>
       )}
@@ -108,21 +141,26 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({
           <p className="question">
             {questions[currentIndex].n1} x {questions[currentIndex].n2} = ?
           </p>
-          <input
-            type="number"
-            className={`form-control mb-2 ${
-              feedback === "correct"
-                ? "is-valid"
-                : feedback === "wrong"
-                ? "is-invalid"
-                : ""
-            }`}
-            value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
-          />
-          <button className="btn btn-success mt-2 w-50" onClick={handleAnswer}>
-            Responder
-          </button>
+          <form onSubmit={handleAnswer}>
+            <input
+              ref={answerInputRef}
+              type="number"
+              inputMode="numeric"
+              autoFocus
+              className={`form-control mb-2 ${
+                feedback === "correct"
+                  ? "is-valid"
+                  : feedback === "wrong"
+                  ? "is-invalid"
+                  : ""
+              }`}
+              value={userAnswer}
+              onChange={(e) => setUserAnswer(e.target.value)}
+            />
+            <button type="submit" className="btn btn-success mt-2 w-50">
+              Responder
+            </button>
+          </form>
 
           {/* Indicador de acertos e erros */}
           <div className="mt-3">
@@ -162,12 +200,21 @@ const TabuadaPractice: React.FC<TabuadaPracticeProps> = ({
             <span className="badge bg-danger fs-5">Precisa praticar mais!</span>
           )}
 
-          <button
-            className="btn btn-primary mt-3 w-50"
-            onClick={generateQuestions}
-          >
-            Praticar novamente
-          </button>
+          <div className="d-flex flex-column align-items-center gap-2 mt-3">
+            <button
+              className="btn btn-primary w-50"
+              onClick={() => generateQuestions()}
+              autoFocus
+            >
+              Praticar novamente
+            </button>
+            <button
+              className="btn btn-outline-primary w-50"
+              onClick={startRandomPractice}
+            >
+              🎲 Sortear outra tabuada
+            </button>
+          </div>
         </div>
       )}
     </div>

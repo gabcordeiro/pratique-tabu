@@ -3,6 +3,7 @@ export interface User {
   password: string;
   email: string; // ✅ adicionamos email
   points?: number;
+  anonymous?: boolean; // modo anônimo (sem login)
 }
 
 export interface TabuadaAnswer {
@@ -19,6 +20,23 @@ export interface TabuadaRecord {
   percentage: number;
   answers: TabuadaAnswer[];
 }
+
+// Modo anônimo: o histórico fica só na sessão do navegador (sessionStorage)
+export const ANONYMOUS_USERNAME = "Anônimo";
+
+export const createAnonymousUser = (): User => ({
+  username: ANONYMOUS_USERNAME,
+  password: "",
+  email: "",
+  anonymous: true,
+});
+
+const historyStorage = (username: string): Storage =>
+  username === ANONYMOUS_USERNAME ? sessionStorage : localStorage;
+
+export const clearAnonymousHistory = () => {
+  sessionStorage.removeItem("histories");
+};
 
 // Usuários
 export const getUsers = (): User[] => {
@@ -44,17 +62,18 @@ export const findUser = (
 
 // Histórico
 export const saveHistory = (username: string, record: TabuadaRecord) => {
+  const storage = historyStorage(username);
   const histories: Record<string, TabuadaRecord[]> = JSON.parse(
-    localStorage.getItem("histories") || "{}"
+    storage.getItem("histories") || "{}"
   );
   if (!histories[username]) histories[username] = [];
   histories[username].push(record);
-  localStorage.setItem("histories", JSON.stringify(histories));
+  storage.setItem("histories", JSON.stringify(histories));
 };
 
 export const getHistory = (username: string): TabuadaRecord[] => {
   const histories: Record<string, TabuadaRecord[]> = JSON.parse(
-    localStorage.getItem("histories") || "{}"
+    historyStorage(username).getItem("histories") || "{}"
   );
   return histories[username] || [];
 };

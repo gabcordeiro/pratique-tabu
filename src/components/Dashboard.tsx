@@ -32,6 +32,12 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         </button>
       </div>
 
+      {user.anonymous && (
+        <div className="alert alert-info">
+          Você está no modo anônimo. Crie uma conta para salvar seu histórico.
+        </div>
+      )}
+
       {/* Desafio diário */}
       <div className="card p-3 mb-4 bg-warning text-dark animate__animated animate__fadeIn">
         <h4>Desafio do dia 🎯</h4>
